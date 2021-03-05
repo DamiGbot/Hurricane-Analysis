@@ -25,8 +25,11 @@ def getting_damages():
     for damage in damages:
         if damage[0] == "D":
             updated_damage.append("Damages not recorded")
-        else:
-            updated_damage.append(float(damage[:-1]))
+        elif damage[-1] == "M":
+            updated_damage.append(float(damage[:-1]) * 1000000)
+        elif damage[-1] == "B":
+            updated_damage.append(float(damage[:-1]) * 1000000000)
+
     return updated_damage
 
 getting_damages()
@@ -58,8 +61,6 @@ hurricane_data_by_name, hurricane_data_by_year = update_hurricane_dict()
 sorted_hurricane_data_by_year = {}
 for key in sorted(hurricane_data_by_year):
     sorted_hurricane_data_by_year[key] = hurricane_data_by_year[key]
-
-# print(sorted_hurricane_data_by_year)
 
 # write your count affected areas function here:
 updated_areas_affected = {}
@@ -96,22 +97,71 @@ def most_number_of_deaths(hurricane):
                     result = hurricane[name]["Name"]
     return "{} caused the highest death ({} deaths)".format(result, highest_number_deaths)
 
-print(most_number_of_deaths(hurricane_data_by_name))
+most_number_of_deaths(hurricane_data_by_name)
 
 # write your catgeorize by mortality function here:
+mortality_rate = {}
+mortality_rate.update({0: [], 1: [], 2: [], 3: [], 4: [], 5: []})
+def calculate_mortality_rate(hurricane):
+    for name in hurricane:
+        for key,value in hurricane[name].items():
+            if key == "Deaths":
+                if hurricane[name][key] <= 0:
+                    mortality_rate[0].append(hurricane[name]["Name"])
+                elif hurricane[name][key] > 0 and hurricane[name][key] <= 100:
+                    mortality_rate[1].append(hurricane[name]["Name"])
+                elif hurricane[name][key] > 100 and hurricane[name][key] <= 500:
+                    mortality_rate[2].append(hurricane[name]["Name"])
+                elif hurricane[name][key] > 500 and hurricane[name][key] <= 1000:
+                    mortality_rate[3].append(hurricane[name]["Name"])
+                elif hurricane[name][key] > 1000 and hurricane[name][key] <= 10000:
+                    mortality_rate[4].append(hurricane[name]["Name"])
+                else:
+                    mortality_rate[5].append(hurricane[name]["Name"])
 
+    return mortality_rate
 
-
-
-
-
+calculate_mortality_rate(hurricane_data_by_name)
 
 # write your greatest damage function here:
+def most_number_of_damages(hurricane, lst):
+    highest_number_damages = 0
+    damage_cost = ""
+    most_damages = ""
+    for name in hurricane:
+        for key,value in hurricane[name].items():
+            if key == "Damage":
+                if type(hurricane[name][key]) == float:
+                    if hurricane[name][key] > highest_number_damages:
+                        highest_number_damages = hurricane[name][key]
+                        most_damages = hurricane[name]["Name"]
 
+    # return highest_number_damages
+    return "{} caused the highest damages {}".format(most_damages, highest_number_damages)
 
-
-
-
-
+most_number_of_damages(hurricane_data_by_name, damages)
 
 # write your catgeorize by damage function here:
+damage_scale = {}
+damage_scale.update({0: [], 1: [], 2: [], 3: [], 4: [], 5: []})
+def damage_level(hurricane):
+    for name in hurricane:
+        for key,value in hurricane[name].items():
+            if key == "Damage":
+                if type(hurricane[name][key]) == float:
+                    if hurricane[name][key] <= 0:
+                        damage_scale[0].append(hurricane[name]["Name"])
+                    elif hurricane[name][key] > 0 and hurricane[name][key] <= 100000000:
+                        damage_scale[1].append(hurricane[name]["Name"])
+                    elif hurricane[name][key] > 100000000 and hurricane[name][key] <= 1000000000:
+                        damage_scale[2].append(hurricane[name]["Name"])
+                    elif hurricane[name][key] > 1000000000 and hurricane[name][key] <= 10000000000:
+                        damage_scale[3].append(hurricane[name]["Name"])
+                    elif hurricane[name][key] > 10000000000 and hurricane[name][key] <= 50000000000:
+                        damage_scale[4].append(hurricane[name]["Name"])
+                    else:
+                        damage_scale[5].append(hurricane[name]["Name"])
+    return damage_scale
+
+damage_level(hurricane_data_by_name)
+
